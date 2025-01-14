@@ -167,4 +167,4 @@ fi
 echo "Cleaning up temporary files..."
 rm -f /tmp/heimdall_config.zip
 
-echo "Setup complete. Access Heimdall at http://$HOST_IP/"
+echo "Setup complete. Access Heimdall at http://$HOST_IP:8088/"

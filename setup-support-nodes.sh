@@ -75,7 +75,7 @@ dirs=(
   /media/docker/ohif-orthanc
   /media/docker/mirth
   /media/docker/postgres/pgsql_volume
-  /media/docker/heimdall/www/
+  /media/docker/hemidall/www/
 )
 
 echo "Creating required directories..."

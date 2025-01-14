@@ -132,8 +132,8 @@ sudo chmod +x /home/$USER/support-tools/*.yml
 } &> /dev/null
 sleep 2
 
-# Function to configure Docker Swarm
-configure_swarm() {
+# Configure Docker Swarm and label nodes
+configure_swarm_and_label() {
     while true; do
         read -p "Do you want to configure this system as a Docker Swarm leader (yes/no)? " yn
         case $yn in
@@ -141,7 +141,7 @@ configure_swarm() {
                 echo "OK, enter your IP in the next prompt..."
                 read -p "Enter your IP address: " IP_ADDRESS
                 echo "Initializing Docker Swarm with IP address $IP_ADDRESS..."
-                sudo docker swarm init --advertise-addr $IP_ADDRESS --data-path-port 1234
+                sudo docker swarm init --advertise-addr $IP_ADDRESS
                 if [ $? -ne 0 ]; then
                     echo "Docker Swarm initialization failed."
                     exit 1
@@ -158,10 +158,36 @@ configure_swarm() {
                 ;;
         esac
     done
+
+    # Label multiple nodes
+    while true; do
+        read -p "Do you want to label a node for the swarm? (yes/no)? " yn
+        case $yn in
+            yes )
+                echo "OK, enter the hostname and the label value for the node in the next prompts..."
+                read -p "Enter the hostname of the node to label: " HOSTNAME
+                read -p "Enter the nodeName value (e.g., node1): " NODE_NAME
+                echo "Labeling the node..."
+                sudo docker node update --label-add nodeName=${NODE_NAME} $HOSTNAME
+                if [ $? -eq 0 ]; then
+                    echo "Node labeled successfully with nodeName=${NODE_NAME}."
+                else
+                    echo "Failed to label the node. Please check your inputs."
+                fi
+                ;;
+            no )
+                echo "Node labeling process completed."
+                break
+                ;;
+            * )
+                echo "Invalid response. Please answer yes or no."
+                ;;
+        esac
+    done
 }
 
-# Configure Swarm
-configure_swarm
+# Configure Swarm and Label Nodes
+configure_swarm_and_label
 
 # Finish
 echo
